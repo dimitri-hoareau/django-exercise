@@ -5,11 +5,11 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.permissions import IsAuthenticated
  
 from sales.models import Article, Sale
-from sales.serializers import ArticleSerializer
+from sales.serializers import ArticleSerializer, SaleSerializer
  
 class ArticleViewset(ModelViewSet):
     """
-    Viewset for the Article model, used to handle HTTP requests and responses related to Articles.
+    Viewset for the Article model
     """
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
@@ -18,3 +18,16 @@ class ArticleViewset(ModelViewSet):
  
     def get_queryset(self):
         return Article.objects.all()
+    
+
+class SaleViewset(ModelViewSet):
+    """
+    Viewset for the Sale model
+    """
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+ 
+    serializer_class = SaleSerializer
+ 
+    def get_queryset(self):
+        return Sale.objects.all()

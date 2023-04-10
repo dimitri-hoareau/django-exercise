@@ -10,3 +10,13 @@ class ArticleSerializer(ModelSerializer):
     class Meta:
         model = Article
         fields = ['id', 'code', 'category', 'name', 'manufacturing_cost']
+
+
+class SaleSerializer(ModelSerializer):
+    """
+    Serializer for the Sale model
+    """
+ 
+    class Meta:
+        model = Sale
+        fields = ['date', 'author', 'article', 'quantity', 'unit_selling_price']
