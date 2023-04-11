@@ -75,6 +75,25 @@ class SaleViewset(ModelViewSet):
             # Set the value as an attribute
             self.total_of_total_selling_price = total_of_total_selling_price['total_selling_price']
 
+            # Calculate the profit
+            total_of_total_cost_price =  queryset.annotate(
+                total_selling_price=Sum(F('quantity') * F('unit_selling_price'), output_field=FloatField()),
+                manufacturing_cost=F('article__manufacturing_cost'),
+                total_cost_price=F('quantity') * F('article__manufacturing_cost')
+            )
+ 
+            total_of_total_cost_price = total_of_total_cost_price.aggregate(total_cost_price=Sum(F('total_cost_price'), output_field=FloatField()))
+
+            total_of_total_cost_price = total_of_total_cost_price['total_cost_price']
+
+            self.profit = self.total_of_total_selling_price - total_of_total_cost_price
+            print(self.profit)
+
+
+
+
+
+
             
         return self.filter_queryset(queryset)
 
@@ -108,6 +127,7 @@ class SaleViewset(ModelViewSet):
 
         if 'article_id' in self.request.GET:
             data['total_of_total_selling_price'] = self.total_of_total_selling_price
+            data['profit'] = self.profit
 
         data['results'] = serializer.data
 
