@@ -87,14 +87,16 @@ class SaleViewset(ModelViewSet):
             total_of_total_cost_price = total_of_total_cost_price['total_cost_price']
 
             self.profit = self.total_of_total_selling_price - total_of_total_cost_price
-            print(self.profit)
+
+            # Get the last selling date
+            self.last_selling_date = queryset.order_by('-date').first().date
 
 
 
 
 
 
-            
+
         return self.filter_queryset(queryset)
 
     def perform_create(self, serializer):
@@ -128,6 +130,7 @@ class SaleViewset(ModelViewSet):
         if 'article_id' in self.request.GET:
             data['total_of_total_selling_price'] = self.total_of_total_selling_price
             data['profit'] = self.profit
+            data['last_selling_date'] = self.last_selling_date
 
         data['results'] = serializer.data
 
