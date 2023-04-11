@@ -46,7 +46,7 @@ class SaleViewset(ModelViewSet):
     Viewset for the Sale model
     """
     authentication_classes = [SessionAuthentication, BasicAuthentication]
-    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     serializer_class = SaleSerializer
  
     serializer_class = SaleSerializer
