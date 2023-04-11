@@ -1,36 +1,14 @@
-from django.shortcuts import render
+from collections import OrderedDict
 from django.db.models import F, FloatField, Sum
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
-from rest_framework.permissions import BasePermission, SAFE_METHODS, IsAuthenticatedOrReadOnly
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
-from collections import OrderedDict
 from rest_framework.pagination import PageNumberPagination
 from sales.models import Article, Sale
 from sales.serializers import ArticleSerializer, SaleSerializer
-
-    
-class CreateOnly(BasePermission):
-    """
-    Custom permission class that allows only POST requests.
-    """
-    def has_permission(self, request, view):
-        return request.method == 'POST'
-    
-class IsOwnerOrReadOnly(BasePermission):
-    """
-    Custom permission class that allows owners to edit their own sales but only allows
-    read-only access to other users.
-    """
-    def has_object_permission(self, request, view, obj):
-        # Read permissions are allowed for all requests, so we'll always allow GET, HEAD, and OPTIONS requests.
-        if request.method in SAFE_METHODS:
-            return True
-
-        # Write permissions are only allowed to the author of the sale.
-        return obj.author == request.user
+from .permissions import CreateOnly, IsOwnerOrReadOnly
  
 class ArticleViewset(ModelViewSet):
     """
@@ -90,12 +68,6 @@ class SaleViewset(ModelViewSet):
 
             # Get the last selling date
             self.last_selling_date = queryset.order_by('-date').first().date
-
-
-
-
-
-
 
         return self.filter_queryset(queryset)
 
