@@ -10,7 +10,7 @@ class TestArticle(APITestCase):
 
     def test_list_unauthenticated(self):
         """
-        Test that unauthenticated users can't access the Article API endpoint.
+        Test that unauthenticated users can't access the Article API GET endpoint.
         """
 
         self.client.force_authenticate(user=None)
@@ -19,7 +19,7 @@ class TestArticle(APITestCase):
 
     def test_list_authenticated(self):
         """
-        Test that authenticated users can access the Article API endpoint.
+        Test that authenticated users can't access the Article GET API endpoint.
         """
 
         self.user = User.objects.create_user(
@@ -29,7 +29,10 @@ class TestArticle(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN )
+
+    # TEST POST OK 
+    # TEST PUT/DELETE PAS OK
 
 
 class TestSale(APITestCase):
@@ -38,7 +41,7 @@ class TestSale(APITestCase):
 
     def test_list_unauthenticated(self):
         """
-        Test that unauthenticated users can't access the Sale API endpoint.
+        Test that unauthenticated users can't access the Sale API GET endpoint.
         """
 
         self.client.force_authenticate(user=None)
@@ -47,7 +50,7 @@ class TestSale(APITestCase):
 
     def test_list_authenticated(self):
         """
-        Test that authenticated users can access the Sale API endpoint.
+        Test that authenticated users can access the Sale API GET endpoint.
         """
 
         self.user = User.objects.create_user(
@@ -58,3 +61,6 @@ class TestSale(APITestCase):
 
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK )
+
+    # TEST POST OK 
+    # TEST PUT/DELETE SEULEMENT AUTH
