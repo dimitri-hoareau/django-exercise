@@ -1,5 +1,7 @@
 from django.shortcuts import render
+from django.db.models import F, FloatField, Sum
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 from rest_framework.permissions import BasePermission, SAFE_METHODS, IsAuthenticatedOrReadOnly
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
@@ -39,7 +41,6 @@ class ArticleViewset(ModelViewSet):
  
     def get_queryset(self):
         return Article.objects.all()
-    
 
 class SaleViewset(ModelViewSet):
     """
@@ -48,11 +49,23 @@ class SaleViewset(ModelViewSet):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     serializer_class = SaleSerializer
- 
-    serializer_class = SaleSerializer
- 
+    filter_backends = [OrderingFilter]
+    ordering = ['-total_selling_price']
+
+
     def get_queryset(self):
-        return Sale.objects.all()
+        queryset = Sale.objects.all()
+
+        article_id = self.request.GET.get('article_id')
+        if article_id is not None:
+            # Filter by article_id
+            queryset = queryset.filter(article_id=article_id)
+            # Sort the results in descending order by the total_selling_price 
+            queryset = queryset.annotate(
+            total_selling_price=Sum(F('quantity') * F('unit_selling_price'), output_field=FloatField())
+        )
+            
+        return self.filter_queryset(queryset)
     
     def perform_create(self, serializer):
         """
