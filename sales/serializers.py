@@ -3,6 +3,7 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField, P
  
 from sales.models import Article, Sale
 from users.models import User
+from django.db.models import F, FloatField, Sum
  
 class ArticleSerializer(ModelSerializer):
     """
@@ -28,3 +29,9 @@ class SaleSerializer(ModelSerializer):
 
     def get_article_category(self, obj):
         return obj.article.category.display_name
+    
+    # def to_representation(self, instance):
+    #     data = super().to_representation(instance)
+    #     if 'article_id' in self.context['request'].query_params:
+    #         data['new_field'] = 'test'
+    #     return data
