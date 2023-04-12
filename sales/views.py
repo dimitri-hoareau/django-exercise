@@ -41,25 +41,27 @@ class SaleViewset(ModelViewSet):
             # Filter by article_id
             queryset = queryset.filter(article_id=article_id)
 
+            self.last_selling_date = queryset.order_by('-date').first().date
+
             # Sort the results in descending order by the total_selling_price 
             queryset = queryset.annotate(
                 total_selling_price=Sum(F('quantity') * F('unit_selling_price'), output_field=FloatField())
             ).order_by('-total_selling_price')
 
+
             # Get the total of total_selling_price
             total_of_total_selling_price = queryset.aggregate(
                 total_selling_price=Sum(F('quantity') * F('unit_selling_price'), output_field=FloatField())
             )
+            
             # Set the value as an attribute
             self.total_of_total_selling_price = total_of_total_selling_price['total_selling_price']
 
             # Calculate the profit
-            total_of_total_cost_price =  queryset.annotate(
-                total_selling_price=Sum(F('quantity') * F('unit_selling_price'), output_field=FloatField()),
-                manufacturing_cost=F('article__manufacturing_cost'),
+            total_of_total_cost_price = queryset.annotate(
                 total_cost_price=F('quantity') * F('article__manufacturing_cost')
             )
- 
+
             total_of_total_cost_price = total_of_total_cost_price.aggregate(total_cost_price=Sum(F('total_cost_price'), output_field=FloatField()))
 
             total_of_total_cost_price = total_of_total_cost_price['total_cost_price']
