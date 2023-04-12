@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     "users",
     # External apps
     "django_extensions",
-    'rest_framework'
+    'rest_framework',
+    'rest_framework_simplejwt'
 ]
 
 

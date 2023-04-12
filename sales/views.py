@@ -3,6 +3,7 @@ from django.db.models import F, FloatField, Sum
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
@@ -14,7 +15,7 @@ class ArticleViewset(ModelViewSet):
     """
     Viewset for the Article model
     """
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+
     permission_classes = [IsAuthenticated, CreateOnly]
  
     serializer_class = ArticleSerializer
@@ -27,7 +28,7 @@ class SaleViewset(ModelViewSet):
     """
     Viewset for the Sale model
     """
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     serializer_class = SaleSerializer
     filter_backends = [OrderingFilter]
