@@ -24,7 +24,7 @@ class TestArticle(APITestCase):
 
         self.client.force_authenticate(user=None)
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)    
 
     def test_list_authenticated(self):
         """
@@ -69,7 +69,7 @@ class TestArticle(APITestCase):
 
         response = self.client.post(self.url, data=article_data)
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(Article.objects.count(), 0)
 
 
@@ -135,7 +135,7 @@ class TestSale(APITestCase):
         """
         self.client.force_authenticate(user=None)
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_list_authenticated(self):
         """
